@@ -10,13 +10,22 @@ const app = express();
 // Connect Database
 connectDB();
 
-// CORS
+// CORS Configuration
+const allowedOrigins = [
+  'https://pravxnstudio-p6vy.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:3000'
+];
+
 app.use(
   cors({
-    origin: [
-      'https://pravxnstudio-p6vy.vercel.app',
-      'http://localhost:5173'
-    ],
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.vercel.app')) {
+        callback(null, true);
+      } else {
+        callback(null, true);
+      }
+    },
     credentials: true
   })
 );
