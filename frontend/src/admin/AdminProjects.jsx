@@ -251,8 +251,14 @@ const AdminProjects = () => {
           <div className="w-8 h-8 border-2 border-[#C5A880] border-t-transparent rounded-full animate-spin" />
         </div>
       ) : projects.length === 0 ? (
-        <div className="text-center py-20 text-neutral-400 font-light bg-[#121212] rounded-3xl border border-white/5">
-          <p>No projects published yet.</p>
+        <div className="text-center py-20 text-neutral-400 font-light bg-[#121212] rounded-3xl border border-white/5 space-y-4">
+          <p>No projects published yet or the server is spinning up.</p>
+          <button
+            onClick={fetchProjects}
+            className="px-6 py-2.5 rounded-full bg-white/10 hover:bg-[#C5A880] hover:text-black text-xs uppercase tracking-widest font-semibold text-white transition-colors"
+          >
+            Refresh Projects List
+          </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
