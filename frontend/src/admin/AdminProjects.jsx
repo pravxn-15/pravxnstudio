@@ -86,27 +86,57 @@ const AdminProjects = () => {
   };
 
   const handleCoverUpload = async (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
+
     if (!file) return;
+
+    console.log('Selected file:', file.name, file.type, file.size);
+
+    if (!file.type.startsWith('image/')) {
+      addToast('Please select an image file', 'error');
+      return;
+    }
+
+    if (file.size > 20 * 1024 * 1024) {
+      addToast('Image must be smaller than 20MB', 'error');
+      return;
+    }
 
     const data = new FormData();
     data.append('image', file);
 
     setUploading(true);
+
     try {
-      const res = await api.post('/uploads/image', data, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      const res = await api.post('/uploads/image', data);
+
+      console.log('Cloudinary upload response:', res.data);
+
+      if (!res.data?.url) {
+        throw new Error('Upload succeeded but no image URL was returned');
+      }
+
       setFormData((prev) => ({
         ...prev,
-        coverImage: { url: res.data.url, publicId: res.data.publicId }
+        coverImage: {
+          url: res.data.url,
+          publicId: res.data.publicId || '',
+        },
       }));
+
       addToast('Cover image uploaded successfully', 'success');
     } catch (err) {
-      console.error(err);
-      addToast('Failed to upload cover image', 'error');
+      console.error('IMAGE UPLOAD ERROR:', err);
+      console.error('Status:', err.response?.status);
+      console.error('Response:', err.response?.data);
+
+      addToast(
+        err.response?.data?.message || 'Failed to upload cover image',
+        'error'
+      );
     } finally {
       setUploading(false);
+      e.target.value = '';
     }
   };
 
@@ -432,7 +462,7 @@ const AdminProjects = () => {
                   <label className="block text-xs uppercase tracking-widest text-neutral-300 font-semibold">
                     Gallery Images
                   </label>
-                  
+
                   <div className="flex flex-col sm:flex-row gap-3">
                     <select
                       value={newGallerySection}

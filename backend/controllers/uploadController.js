@@ -9,22 +9,34 @@ const uploadImage = async (req, res) => {
     }
 
     const fileBuffer = req.file.buffer;
-    const fileMime = req.file.mimetype;
+    const fileMime = req.file.mimetype || 'image/jpeg';
 
-    // Check if Cloudinary is configured
-    if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY) {
-      return new Promise((resolve, reject) => {
+    // Check if Cloudinary credentials exist in process.env
+    if (
+      process.env.CLOUDINARY_CLOUD_NAME &&
+      process.env.CLOUDINARY_API_KEY &&
+      process.env.CLOUDINARY_API_SECRET
+    ) {
+      return new Promise((resolve) => {
         const uploadStream = cloudinary.uploader.upload_stream(
-          { folder: 'pravxnstudio' },
+          {
+            folder: 'pravxnstudio',
+            resource_type: 'auto'
+          },
           (error, result) => {
             if (error) {
               console.error('[Cloudinary Upload Error]', error);
-              return res.status(500).json({ message: 'Cloudinary upload failed', error: error.message });
+              res.status(500).json({
+                message: 'Cloudinary upload failed: ' + (error.message || 'Unknown error'),
+                error: error.message
+              });
+              return resolve();
             }
-            return res.json({
+            res.status(200).json({
               url: result.secure_url,
               publicId: result.public_id
             });
+            return resolve();
           }
         );
         uploadStream.end(fileBuffer);
@@ -39,7 +51,8 @@ const uploadImage = async (req, res) => {
       });
     }
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('[Upload Error]', error);
+    res.status(500).json({ message: error.message || 'Image upload failed' });
   }
 };
 
