@@ -58,7 +58,7 @@ const AdminProjects = () => {
       location: '',
       date: new Date().toISOString().split('T')[0],
       description: '',
-      coverImage: { url: 'https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=1600&auto=format&fit=crop', publicId: '' },
+      coverImage: { url: '', publicId: '' },
       gallery: [],
       filmUrl: '',
       featured: false,
