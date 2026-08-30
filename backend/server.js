@@ -76,8 +76,12 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 10000;
 
-app.listen(PORT, () => {
-  console.log(
-    `[pravxnstudio Backend] Server running on port ${PORT}`
-  );
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(
+      `[pravxnstudio Backend] Server running on port ${PORT}`
+    );
+  });
+}
+
+module.exports = app;

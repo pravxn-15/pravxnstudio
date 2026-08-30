@@ -1,7 +1,18 @@
 import axios from 'axios';
 
+// Safely determine base API URL for Vercel production and local environments
+const getBaseUrl = () => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (envUrl && typeof envUrl === 'string' && envUrl.trim() !== '' && envUrl !== 'undefined') {
+    const cleanUrl = envUrl.replace(/\/+$/, '');
+    return cleanUrl.endsWith('/api') ? cleanUrl : `${cleanUrl}/api`;
+  }
+  // Production fallback API URL (Render live backend)
+  return 'https://pravxnstudio-api.onrender.com/api';
+};
+
 const api = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL}/api`,
+  baseURL: getBaseUrl(),
   timeout: 60000, // 60s timeout to accommodate Render free-tier cold starts
   headers: {
     'Content-Type': 'application/json',
