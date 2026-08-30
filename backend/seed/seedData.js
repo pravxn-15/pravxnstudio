@@ -92,7 +92,7 @@ const seedData = async () => {
         date: new Date('2026-02-14'),
         description: 'A grand multi-day palace celebration enveloped in rich silk, marigold blooms, and sunset acoustic scores.',
         coverImage: {
-          url: 'https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=1600&auto=format&fit=crop',
+          url: 'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1600&auto=format&fit=crop',
           publicId: 'seed_cover_1'
         },
         gallery: [
